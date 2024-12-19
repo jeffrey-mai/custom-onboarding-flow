@@ -1,9 +1,20 @@
 import Wizard from "../components/Wizard";
+import { MainContainerProp } from "../../../types";
 
-const MainContainer = () => {
+const MainContainer: React.FC<MainContainerProp> = (props) => {
+  const { index, setIndex, accountData, setAccountData, wizardPages, setWizardPages, possibleQuestions } = props;
+
   return (
     <div className="mainContainer">
-      <Wizard/>
+      <Wizard
+        index={index} 
+        setIndex={setIndex}
+        accountData={accountData}
+        setAccountData={setAccountData}
+        wizardPages={wizardPages}
+        setWizardPages={setWizardPages}
+        possibleQuestions={possibleQuestions}
+      />
     </div>
   );
 };

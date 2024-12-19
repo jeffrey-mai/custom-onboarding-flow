@@ -82,26 +82,27 @@ body {
   margin-right: 10px;
 }
 
-.wizardQuestions {
+.wizardPages {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  height: 100%;
   width: 100%;
 }
 
-.wizardQuestions div {
+.wizardPages div {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
 }
 
-.wizardQuestions div p{
+.wizardPages div p{
   margin-right: 10px;
 }
 
-.wizardQuestions p:hover{
+.wizardPages p:hover{
   cursor: pointer;
   text-decoration: underline;
 }
@@ -153,4 +154,35 @@ body {
 
 #birthday {
   padding: 3px;
+}
+
+.wizardAddress {
+  display: flex;
+  flex-direction: column;
+  width: 50% !important;
+}
+
+.wizardAddress div {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}
+
+.wizardAddress div input {
+  width: 100%;
+  height: 20px;
+}
+
+.data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.accountsTable, .formsTable {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }

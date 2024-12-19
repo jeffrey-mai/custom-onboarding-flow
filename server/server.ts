@@ -8,8 +8,6 @@ const PORT = 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(process.cwd() + '/build'));
-console.log(process.cwd());
 app.use(cors());
 
 app.use((req: Request, res: Response, next: NextFunction) => {

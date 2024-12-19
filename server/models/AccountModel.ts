@@ -1,5 +1,4 @@
 import pg, { QueryResult } from 'pg';
-import { AccountType } from '../../types';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -40,6 +39,8 @@ const db = {
         CREATE TABLE IF NOT EXISTS forms (
           id SERIAL PRIMARY KEY,
           username VARCHAR(255),
+          wizardpage2 TEXT[] DEFAULT '{"wizardAboutMe"}',
+          wizardpage3 TEXT[] DEFAULT '{"wizardBirthday"}',
           aboutMe TEXT,
           address VARCHAR(255),
           city VARCHAR(100),
@@ -56,7 +57,7 @@ const db = {
     }
     return;
   },
-  query: (text: string, params: any[]): Promise<QueryResult<AccountType[]>> => {
+  query: (text: string, params: any[]): Promise<QueryResult<any>> => {
     console.log('executed query', text);
     return pool.query(text, params);
   }

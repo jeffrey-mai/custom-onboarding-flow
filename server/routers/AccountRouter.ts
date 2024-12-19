@@ -3,16 +3,20 @@ import accountController from '../controllers/AccountController';
 
 const router = Router();
 
-// router.get("/", accountController.getCartList, (req: Request, res: Response) =>
-//   res.status(200).json(res.locals.cartList)
-// );
+router.post("/", accountController.addAccount, (req: Request, res: Response) =>
+  res.status(200).send("Account added to accounts table")
+);
 
-// router.post("/", accountController.addToCart, (req: Request, res: Response) =>
-//   res.status(200).send("Item added to cart")
-// );
+router.get("/account", accountController.getAccount, (req: Request, res: Response) =>
+  res.status(200).json(res.locals.exists)
+);
 
-// router.delete("/", accountController.deleteCartItem, (req: Request, res: Response) =>
-//   res.status(200).send("Item deleted")
-// );
+router.get("/data/accounts", accountController.getAccountsTable, (req: Request, res: Response) =>
+  res.status(200).json(res.locals.accounts)
+);
+
+router.get("/data/forms", accountController.getFormsTable, (req: Request, res: Response) =>
+  res.status(200).json(res.locals.forms)
+);
 
 export default router;

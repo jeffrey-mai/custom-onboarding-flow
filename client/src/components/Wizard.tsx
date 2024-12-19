@@ -1,83 +1,99 @@
-import { useState } from "react";
+import { useEffect } from "react";
+import { MainContainerProp } from "../../../types";
 
-const Wizard = () => {
-  const [index, setIndex] = useState(0);
-  const [wizardQuestions, setWizardQuestions] = useState([
-    // index 0
-    <div className="wizardQuestions">
-      <h2>Create an Account</h2>
-      <div>
-        <p>Username:</p>
-        <input type="text" id="usernameInput" placeholder="username" />
-      </div>
-      <div>
-        <p>Password:</p>
-        <input type="text" id="passwordInput" placeholder="password" />
-      </div>
-      <p onClick={() => setIndex(curr => curr + 1)}>Sign in</p>
-    </div>,
-    // index 1
-    <div className="wizardQuestions">
-      <h2>Sign in</h2>
-      <div>
-        <p>Username:</p>
-        <input type="text" id="usernameInput" placeholder="username" />
-      </div>
-      <div>
-        <p>Password:</p>
-        <input type="text" id="passwordInput" placeholder="password" />
-      </div>
-      <p onClick={() => setIndex(curr => curr - 1)}>Create an Account</p>
-    </div>,
-    // index 2
-    <div className="wizardQuestions">
-      <h2>Account Info 1</h2>
-      <div className="wizardAboutMe">
-        <p>About Me:</p>
-        <textarea id="aboutMeInput" placeholder="tell me about yourself" />
-      </div>
-    </div>,
-    // index 3
-    <div className="wizardQuestions">
-      <h2>Account Info 2</h2>
-      <div className="wizardBirthday">
-        <p>Birthday:</p>
-        <input type="date" id="birthday" name="birthday" min="1900-01-01" max="2024-12-31"/>
-      </div>
-    </div>,
-  ]);
-
+const Wizard: React.FC<MainContainerProp> = (props) => {
+  const { index, setIndex, accountData, setAccountData, wizardPages, setWizardPages, possibleQuestions } = props;
   const handlePreviousClick = () => {
     if(index == 3){
       const currStep = document.getElementById("step2");
       const prevStep = document.getElementById("step3");
       if(currStep) currStep.className = "wizardTrackerCurrentStep";
       if(prevStep) prevStep.className = "wizardTrackerSteps";
+      setIndex(curr => curr - 1);
     } else if(index == 2){
       const currStep = document.getElementById("step1");
       const prevStep = document.getElementById("step2");
       if(currStep) currStep.className = "wizardTrackerCurrentStep";
       if(prevStep) prevStep.className = "wizardTrackerSteps";
+      setIndex(curr => curr - 2);
     }
-    if(index == 2) setIndex(curr => curr-=2);
-    else if(index != 0) setIndex(curr => curr - 1);
   }
 
-  const handleNextClick = () => {
+  const handleNextClick = async () => {
     if(index == 0 || index == 1){
+      const createUsernameInput = document.getElementById("createUsernameInput") as HTMLInputElement;
+      const createPasswordInput = document.getElementById("createPasswordInput") as HTMLInputElement;
+      const usernameInput = document.getElementById("usernameInput") as HTMLInputElement;
+      const passwordInput = document.getElementById("passwordInput") as HTMLInputElement;
       const currStep = document.getElementById("step2");
       const prevStep = document.getElementById("step1");
-      if(currStep) currStep.className = "wizardTrackerCurrentStep";
-      if(prevStep) prevStep.className = "wizardTrackerSteps";
-    } else if(index == 2){
+
+      if(index == 0 && createUsernameInput.value && createPasswordInput.value){
+        await fetch('http://localhost:3000/', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            username: createUsernameInput.value,
+            password: createPasswordInput.value
+          }),
+        })
+        .then(response => {
+          if(!response.ok) throw new Error('Network response was not ok');
+        })
+        .catch(error => { console.error('There was a problem with the POST request:', error);});
+        
+        if(currStep) currStep.className = "wizardTrackerCurrentStep";
+        if(prevStep) prevStep.className = "wizardTrackerSteps";
+        setIndex(curr => curr + 2);
+      } 
+      else if(index == 1 && usernameInput.value && passwordInput.value){
+        await fetch(`http://localhost:3000/account?username=${usernameInput.value}&password=${passwordInput.value}`, {
+          method: 'GET',
+          headers: {'Content-Type': 'application/json'},
+        })
+        .then(response => response.json())
+        .then(data => {
+          setAccountData(data);
+          let tempWizardPages = wizardPages;
+          tempWizardPages[2] = (<><h2>Account Info 1</h2></>);
+          tempWizardPages[3] = (<><h2>Account Info 2</h2></>);
+
+          data.wizardpage2.forEach((ele: string) => {
+            tempWizardPages[2] = <>
+              {tempWizardPages[2]}
+              {possibleQuestions[ele]}
+            </>;
+          })
+          data.wizardpage3.forEach((ele: string) => {
+            tempWizardPages[3] = <>
+              {tempWizardPages[3]}
+              {possibleQuestions[ele]}
+            </>;
+          })
+          setWizardPages(tempWizardPages);
+        })
+        .catch(error => { console.error('There was a problem with the GET request:', error);});
+        
+        if(currStep) currStep.className = "wizardTrackerCurrentStep";
+        if(prevStep) prevStep.className = "wizardTrackerSteps";
+        setIndex(curr => curr + 1);
+      }
+    }
+    else if(index == 2){
       const currStep = document.getElementById("step3");
       const prevStep = document.getElementById("step2");
       if(currStep) currStep.className = "wizardTrackerCurrentStep";
       if(prevStep) prevStep.className = "wizardTrackerSteps";
+      setIndex(curr => curr + 1);
     }
-    if(index == 0) setIndex(curr => curr+=2);
-    else if(index < 3) setIndex(curr => curr + 1);
   }
+
+  useEffect(() => {
+    if (accountData) {
+      console.log('Updated accountData:', accountData);
+      wizardPages.forEach(ele => console.log(ele));
+    }
+  }, [accountData]);
 
   return (
     <div className="wizard">
@@ -96,10 +112,14 @@ const Wizard = () => {
             <h4>Account Info 2</h4>
           </div>
         </div>
-        {wizardQuestions[index]}
+        <div className="wizardPages">
+          {wizardPages[index]}
+        </div>
         <div className="wizardNextPrev">
           <button onClick={handlePreviousClick}>Previous</button>
-          <button onClick={handleNextClick}>Next</button>
+          {index == 0 ? <button onClick={handleNextClick}>Create</button> :
+           index == 1 ? <button onClick={handleNextClick}>Login</button> :
+           <button onClick={handleNextClick}>Next</button>}
         </div>
       </div>
     </div>
