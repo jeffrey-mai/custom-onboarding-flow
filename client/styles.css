@@ -87,12 +87,12 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%;
   width: 100%;
 }
 
 .wizardPages div {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 100%;
@@ -136,11 +136,12 @@ body {
 
 .wizardAboutMe {
   display: flex !important;
+  flex-direction: row !important;
   align-items: start !important;
   justify-content: center !important;
 }
 
-.wizardAboutMe p {
+.wizardAboutMe p, .wizardBirthday p, .wizardAddress div p {
   cursor: default !important;
   text-decoration: none !important;
 }
@@ -150,6 +151,11 @@ body {
   height: 15vh;
   padding: 5px;
   font-size: 15px;
+}
+
+.wizardBirthday {
+  display: flex !important;
+  flex-direction: row !important;
 }
 
 #birthday {
@@ -185,4 +191,14 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid black;
+  padding: 8px;
+  text-align: left;
 }

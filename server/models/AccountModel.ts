@@ -16,14 +16,6 @@ const pool = new Pool({
   idleTimeoutMillis: null,
 });
 
-// async function startDB() {
-//   const insertFormDataQuery = `
-//     INSERT INTO forms (username, aboutMe, address, city, state, zip, birthday)
-//     VALUES ($1, $2, $3, $4, $5, $6, $7)
-//     ON CONFLICT (username) DO NOTHING;
-//   `;
-// }
-
 const db = {
   startDB: async () => {
     try {
@@ -46,7 +38,7 @@ const db = {
           city VARCHAR(100),
           state VARCHAR(100),
           zip INT,
-          birthday DATE,
+          birthday VARCHAR(100),
           FOREIGN KEY (username) REFERENCES accounts(username)
         )
       `;

@@ -5,17 +5,29 @@ const accountController: { [key: string]: (req: Request, res: Response, next: Ne
 
 accountController.addAccount = (req: Request, res: Response, next: NextFunction) => {
   const queryString = `
-    WITH inserted_account AS (
+    WITH existing_account AS (
+      SELECT username
+      FROM accounts
+      WHERE username = $1
+    ),
+    inserted_account AS (
       INSERT INTO accounts (username, password)
-      VALUES ($1, $2)
+      SELECT $1, $2
+      WHERE NOT EXISTS (SELECT 1 FROM existing_account)
       RETURNING username
     )
     INSERT INTO forms (username)
-    SELECT username FROM inserted_account;
+    SELECT username FROM inserted_account
+    WHERE username IS NOT NULL
+    RETURNING username;
   `;
   const { username, password } = req.body;
   db.query(queryString, [username, password])
-    .then((data) => {return next()})
+    .then((data) => {
+      console.log(data);
+      req.body.data = data;
+      return next()
+    })
     .catch((err) => {return next(err);});
 }
 
@@ -52,6 +64,23 @@ accountController.getFormsTable = (req: Request, res: Response, next: NextFuncti
     .then((data) => {
       console.log(data.rows);
       res.locals.forms = data.rows;
+      return next();
+    })
+    .catch((err) => {return next(err);});
+}
+
+accountController.updateFormsTable = (req: Request, res: Response, next: NextFunction) => {
+  const { columns, username } = req.body;
+  console.log(username, columns);
+  const queryColumns = columns.join(", ");
+  const queryString = `
+    UPDATE forms
+    SET ${queryColumns}
+    WHERE username = $1;
+  `;
+  db.query(queryString, [username])
+    .then((data) => {
+      console.log(data);
       return next();
     })
     .catch((err) => {return next(err);});

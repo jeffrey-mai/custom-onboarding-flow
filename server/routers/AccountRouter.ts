@@ -3,8 +3,14 @@ import accountController from '../controllers/AccountController';
 
 const router = Router();
 
-router.post("/", accountController.addAccount, (req: Request, res: Response) =>
-  res.status(200).send("Account added to accounts table")
+router.post("/", accountController.addAccount, (req: Request, res: Response) => {
+  if(req.body.data.rows.length == 0) req.body.data.rows.push = {success: false};
+  else req.body.data.rows.push = {success: false};
+  res.status(200).json(req.body.data);
+});
+
+router.put("/", accountController.updateFormsTable, (req: Request, res: Response) =>
+  res.status(200).send("updated form")
 );
 
 router.get("/account", accountController.getAccount, (req: Request, res: Response) =>

@@ -37,14 +37,19 @@ const Wizard: React.FC<MainContainerProp> = (props) => {
             password: createPasswordInput.value
           }),
         })
-        .then(response => {
-          if(!response.ok) throw new Error('Network response was not ok');
+        .then(response => response.json())
+        .then(data => {
+          if(data.rowCount != 0){
+            console.log(data);
+            console.log(data.rows[0].username);
+            setAccountData(data.rows[0].username);
+            if(currStep) currStep.className = "wizardTrackerCurrentStep";
+            if(prevStep) prevStep.className = "wizardTrackerSteps";
+            setIndex(curr => curr + 2);
+          }
+          else alert("Username already exists or username/password is empty!");
         })
         .catch(error => { console.error('There was a problem with the POST request:', error);});
-        
-        if(currStep) currStep.className = "wizardTrackerCurrentStep";
-        if(prevStep) prevStep.className = "wizardTrackerSteps";
-        setIndex(curr => curr + 2);
       } 
       else if(index == 1 && usernameInput.value && passwordInput.value){
         await fetch(`http://localhost:3000/account?username=${usernameInput.value}&password=${passwordInput.value}`, {
@@ -53,7 +58,8 @@ const Wizard: React.FC<MainContainerProp> = (props) => {
         })
         .then(response => response.json())
         .then(data => {
-          setAccountData(data);
+          console.log(data);
+          setAccountData(data.username);
           let tempWizardPages = wizardPages;
           tempWizardPages[2] = (<><h2>Account Info 1</h2></>);
           tempWizardPages[3] = (<><h2>Account Info 2</h2></>);
@@ -79,12 +85,45 @@ const Wizard: React.FC<MainContainerProp> = (props) => {
         setIndex(curr => curr + 1);
       }
     }
-    else if(index == 2){
+    else if(index == 2 || index == 3){
+      const aboutMeInput = document.getElementById("aboutMeInput") as HTMLInputElement;
+      const streetAddressInput = document.getElementById("streetAddressInput") as HTMLInputElement;
+      const cityInput = document.getElementById("cityInput") as HTMLInputElement;
+      const stateInput = document.getElementById("stateInput") as HTMLInputElement;
+      const zipInput = document.getElementById("zipInput") as HTMLInputElement;
+      const birthdayInput = document.getElementById("birthdayInput") as HTMLInputElement;
       const currStep = document.getElementById("step3");
       const prevStep = document.getElementById("step2");
-      if(currStep) currStep.className = "wizardTrackerCurrentStep";
-      if(prevStep) prevStep.className = "wizardTrackerSteps";
-      setIndex(curr => curr + 1);
+      const updateColumns = [];
+
+      if(aboutMeInput) updateColumns.push(`aboutme = '${aboutMeInput.value ? aboutMeInput.value : null}'`);
+      if(streetAddressInput) updateColumns.push(`address = '${streetAddressInput.value ? streetAddressInput.value : null}'`);
+      if(cityInput) updateColumns.push(`city = '${cityInput.value ? cityInput.value : null}'`);
+      if(stateInput) updateColumns.push(`state = '${stateInput.value ? stateInput.value : null}'`);
+      if(zipInput) updateColumns.push(`zip = ${zipInput.value ? zipInput.value : null}`);
+      if(birthdayInput) updateColumns.push(`birthday = '${birthdayInput.value ? birthdayInput.value : null}'`);
+
+      console.log(updateColumns.join(", "));
+
+      if(updateColumns.length != 0 && !updateColumns.join(", ").includes("null")){
+        await fetch('http://localhost:3000/', {
+          method: 'PUT',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            columns: updateColumns,
+            username: accountData
+          })
+        })
+        .then(response => {
+          if(index == 2){
+            if(currStep) currStep.className = "wizardTrackerCurrentStep";
+            if(prevStep) prevStep.className = "wizardTrackerSteps";
+            setIndex(curr => curr + 1);
+          }
+        })
+        .catch(error => { console.error('There was a problem with the POST request:', error);});
+      }
+      else alert("Missing required data!");
     }
   }
 
@@ -119,7 +158,8 @@ const Wizard: React.FC<MainContainerProp> = (props) => {
           <button onClick={handlePreviousClick}>Previous</button>
           {index == 0 ? <button onClick={handleNextClick}>Create</button> :
            index == 1 ? <button onClick={handleNextClick}>Login</button> :
-           <button onClick={handleNextClick}>Next</button>}
+           index == 2 ? <button onClick={handleNextClick}>Next</button> :
+           <button onClick={handleNextClick}>Done</button>}
         </div>
       </div>
     </div>
