@@ -4,8 +4,6 @@ import accountController from '../controllers/AccountController';
 const router = Router();
 
 router.post("/", accountController.addAccount, (req: Request, res: Response) => {
-  if(req.body.data.rows.length == 0) req.body.data.rows.push = {success: false};
-  else req.body.data.rows.push = {success: false};
   res.status(200).json(req.body.data);
 });
 
@@ -13,8 +11,12 @@ router.put("/", accountController.updateFormsTable, (req: Request, res: Response
   res.status(200).send("updated form")
 );
 
+router.put("/admin", accountController.updateQuestions, (req: Request, res: Response) =>
+  res.status(200).send("updated form")
+);
+
 router.get("/account", accountController.getAccount, (req: Request, res: Response) =>
-  res.status(200).json(res.locals.exists)
+  res.status(200).json(res.locals.account)
 );
 
 router.get("/data/accounts", accountController.getAccountsTable, (req: Request, res: Response) =>

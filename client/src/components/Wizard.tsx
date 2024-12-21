@@ -1,8 +1,11 @@
 import { useEffect } from "react";
 import { MainContainerProp } from "../../../types";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const Wizard: React.FC<MainContainerProp> = (props) => {
-  const { index, setIndex, accountData, setAccountData, wizardPages, setWizardPages, possibleQuestions } = props;
+  const { index, setIndex, accountData, setAccountData, wizardPages, setWizardPages, possibleQuestions, hasInitializedData, setHasInitializedData } = props;
+  const navigate = useNavigate();
   const handlePreviousClick = () => {
     if(index == 3){
       const currStep = document.getElementById("step2");
@@ -10,12 +13,9 @@ const Wizard: React.FC<MainContainerProp> = (props) => {
       if(currStep) currStep.className = "wizardTrackerCurrentStep";
       if(prevStep) prevStep.className = "wizardTrackerSteps";
       setIndex(curr => curr - 1);
-    } else if(index == 2){
-      const currStep = document.getElementById("step1");
-      const prevStep = document.getElementById("step2");
-      if(currStep) currStep.className = "wizardTrackerCurrentStep";
-      if(prevStep) prevStep.className = "wizardTrackerSteps";
-      setIndex(curr => curr - 2);
+    } 
+    else if(index == 1){
+      setIndex(curr => curr - 1);
     }
   }
 
@@ -39,10 +39,10 @@ const Wizard: React.FC<MainContainerProp> = (props) => {
         })
         .then(response => response.json())
         .then(data => {
-          if(data.rowCount != 0){
-            console.log(data);
-            console.log(data.rows[0].username);
-            setAccountData(data.rows[0].username);
+          console.log(data);
+          if(data.rowCount != 0){ 
+            setHasInitializedData(false);
+            setAccountData(data.rows[0]);
             if(currStep) currStep.className = "wizardTrackerCurrentStep";
             if(prevStep) prevStep.className = "wizardTrackerSteps";
             setIndex(curr => curr + 2);
@@ -50,7 +50,7 @@ const Wizard: React.FC<MainContainerProp> = (props) => {
           else alert("Username already exists or username/password is empty!");
         })
         .catch(error => { console.error('There was a problem with the POST request:', error);});
-      } 
+      }
       else if(index == 1 && usernameInput.value && passwordInput.value){
         await fetch(`http://localhost:3000/account?username=${usernameInput.value}&password=${passwordInput.value}`, {
           method: 'GET',
@@ -59,31 +59,18 @@ const Wizard: React.FC<MainContainerProp> = (props) => {
         .then(response => response.json())
         .then(data => {
           console.log(data);
-          setAccountData(data.username);
-          let tempWizardPages = wizardPages;
-          tempWizardPages[2] = (<><h2>Account Info 1</h2></>);
-          tempWizardPages[3] = (<><h2>Account Info 2</h2></>);
-
-          data.wizardpage2.forEach((ele: string) => {
-            tempWizardPages[2] = <>
-              {tempWizardPages[2]}
-              {possibleQuestions[ele]}
-            </>;
-          })
-          data.wizardpage3.forEach((ele: string) => {
-            tempWizardPages[3] = <>
-              {tempWizardPages[3]}
-              {possibleQuestions[ele]}
-            </>;
-          })
-          setWizardPages(tempWizardPages);
+          if(data.rowCount != 0){
+            setHasInitializedData(false);
+            setAccountData(data.rows[0]);
+            if(currStep) currStep.className = "wizardTrackerCurrentStep";
+            if(prevStep) prevStep.className = "wizardTrackerSteps";
+            setIndex(curr => curr + 1);
+          }
+          else alert("Account doesn't exist!");
         })
         .catch(error => { console.error('There was a problem with the GET request:', error);});
-        
-        if(currStep) currStep.className = "wizardTrackerCurrentStep";
-        if(prevStep) prevStep.className = "wizardTrackerSteps";
-        setIndex(curr => curr + 1);
       }
+      else alert("Missing required data!");
     }
     else if(index == 2 || index == 3){
       const aboutMeInput = document.getElementById("aboutMeInput") as HTMLInputElement;
@@ -103,15 +90,13 @@ const Wizard: React.FC<MainContainerProp> = (props) => {
       if(zipInput) updateColumns.push(`zip = ${zipInput.value ? zipInput.value : null}`);
       if(birthdayInput) updateColumns.push(`birthday = '${birthdayInput.value ? birthdayInput.value : null}'`);
 
-      console.log(updateColumns.join(", "));
-
       if(updateColumns.length != 0 && !updateColumns.join(", ").includes("null")){
         await fetch('http://localhost:3000/', {
           method: 'PUT',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({
             columns: updateColumns,
-            username: accountData
+            username: accountData.username
           })
         })
         .then(response => {
@@ -124,14 +109,33 @@ const Wizard: React.FC<MainContainerProp> = (props) => {
         .catch(error => { console.error('There was a problem with the POST request:', error);});
       }
       else alert("Missing required data!");
+
+      if(index == 3) navigate('/admin');
     }
   }
 
   useEffect(() => {
-    if (accountData) {
+    if (accountData.wizardpage2 && !hasInitializedData) {
+      let tempWizardPages = wizardPages;
+      tempWizardPages[2] = (<><h2>Account Info 1</h2></>);
+      tempWizardPages[3] = (<><h2>Account Info 2</h2></>);
+
+      accountData.wizardpage2.forEach((ele: string) => {
+        tempWizardPages[2] = <>
+          {tempWizardPages[2]}
+          {possibleQuestions[ele]}
+        </>;
+      })
+      accountData.wizardpage3.forEach((ele: string) => {
+        tempWizardPages[3] = <>
+          {tempWizardPages[3]}
+          {possibleQuestions[ele]}
+        </>;
+      })
+      setWizardPages(tempWizardPages);
+      setHasInitializedData(true);
       console.log('Updated accountData:', accountData);
-      wizardPages.forEach(ele => console.log(ele));
-    }
+    };
   }, [accountData]);
 
   return (
@@ -155,7 +159,7 @@ const Wizard: React.FC<MainContainerProp> = (props) => {
           {wizardPages[index]}
         </div>
         <div className="wizardNextPrev">
-          <button onClick={handlePreviousClick}>Previous</button>
+          {index == 0 ? <></> : <button onClick={handlePreviousClick}>Previous</button>}
           {index == 0 ? <button onClick={handleNextClick}>Create</button> :
            index == 1 ? <button onClick={handleNextClick}>Login</button> :
            index == 2 ? <button onClick={handleNextClick}>Next</button> :

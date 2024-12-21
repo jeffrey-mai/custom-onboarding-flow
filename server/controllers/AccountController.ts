@@ -5,21 +5,19 @@ const accountController: { [key: string]: (req: Request, res: Response, next: Ne
 
 accountController.addAccount = (req: Request, res: Response, next: NextFunction) => {
   const queryString = `
-    WITH existing_account AS (
-      SELECT username
-      FROM accounts
-      WHERE username = $1
-    ),
-    inserted_account AS (
+    WITH inserted_account AS (
       INSERT INTO accounts (username, password)
-      SELECT $1, $2
-      WHERE NOT EXISTS (SELECT 1 FROM existing_account)
+      VALUES ($1, $2)
+      ON CONFLICT (username) DO NOTHING
       RETURNING username
+    ),
+    inserted_forms AS (
+      INSERT INTO forms (username)
+      SELECT $1
+      WHERE NOT EXISTS (SELECT 1 FROM forms WHERE username = $1)
+      RETURNING *
     )
-    INSERT INTO forms (username)
-    SELECT username FROM inserted_account
-    WHERE username IS NOT NULL
-    RETURNING username;
+    SELECT * FROM inserted_forms;
   `;
   const { username, password } = req.body;
   db.query(queryString, [username, password])
@@ -40,8 +38,8 @@ accountController.getAccount = (req: Request, res: Response, next: NextFunction)
   const { username, password } = req.query;
   db.query(queryString, [username, password])
     .then((data) => {
-      console.log(data.rows);
-      res.locals.exists = data.rows[0];
+      console.log(data);
+      res.locals.account = data;
       return next();
     })
     .catch((err) => {return next(err);});
@@ -51,7 +49,6 @@ accountController.getAccountsTable = (req: Request, res: Response, next: NextFun
   const queryString = `SELECT * FROM accounts;`;
   db.query(queryString, [])
     .then((data) => {
-      console.log(data.rows);
       res.locals.accounts = data.rows;
       return next();
     })
@@ -62,7 +59,6 @@ accountController.getFormsTable = (req: Request, res: Response, next: NextFuncti
   const queryString = `SELECT * FROM forms;`;
   db.query(queryString, [])
     .then((data) => {
-      console.log(data.rows);
       res.locals.forms = data.rows;
       return next();
     })
@@ -79,6 +75,22 @@ accountController.updateFormsTable = (req: Request, res: Response, next: NextFun
     WHERE username = $1;
   `;
   db.query(queryString, [username])
+    .then((data) => {
+      console.log(data);
+      return next();
+    })
+    .catch((err) => {return next(err);});
+}
+
+accountController.updateQuestions = (req: Request, res: Response, next: NextFunction) => {
+  const { username, wizardpage2, wizardpage3 } = req.body;
+  console.log(username, wizardpage2, wizardpage3);
+  const queryString = `
+    UPDATE forms
+    SET wizardpage2 = $2, wizardpage3 = $3
+    WHERE username = $1;
+  `;
+  db.query(queryString, [username, wizardpage2, wizardpage3])
     .then((data) => {
       console.log(data);
       return next();

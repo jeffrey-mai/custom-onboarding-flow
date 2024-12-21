@@ -1,12 +1,65 @@
-import React, { JSX, useState } from 'react';
+import React, { JSX, useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MainContainer from './containers/MainContainer';
 import AdminContainer from './containers/AdminContainer';
 import Data from './components/Data';
+import { FormsType } from '../../types';
 
 const App: React.FC = (): JSX.Element => {
   const [index, setIndex] = useState(0);
-  const [accountData, setAccountData] = useState({})
+  const [accountData, setAccountData] = useState<FormsType>({
+    id: -1,
+    username: '',
+    wizardpage2: ['wizardAboutMe'],
+    wizardpage3: ['wizardBirthday'],
+    aboutme: '',
+    address: '',
+    city: '',
+    state: '',
+    zip: -1,
+    birthday: '',
+  })
+  const [hasInitializedData, setHasInitializedData] = useState(false);
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    console.log(name, value);
+    setHasInitializedData(false);
+    setAccountData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+  const possibleQuestions = {
+    // About Me
+    "wizardAboutMe": (<div className="wizardAboutMe">
+      <p>About Me:</p>
+      <textarea id="aboutMeInput" value={accountData.aboutme} onChange={handleInputChange} name="aboutme" placeholder="tell me about yourself" />
+    </div>),
+    // Birthday
+    "wizardBirthday": (<div className="wizardBirthday">
+      <p>Birthday:</p>
+      <input type="date" id="birthdayInput" value={accountData.birthday} onChange={handleInputChange} name="birthday" min="1900-01-01" max="2024-12-31"/>
+    </div>),
+    // Address
+    "wizardAddress": (<div className="wizardAddress">
+      <div>
+        <p>Street Address:</p>
+        <input type="text" id="streetAddressInput" value={accountData.address} onChange={handleInputChange} name="address" placeholder="street address" />
+      </div>
+      <div>
+        <p>City:</p>
+        <input type="text" id="cityInput" value={accountData.city} onChange={handleInputChange} name="city" placeholder="city" />
+      </div>
+      <div>
+        <p>State:</p>
+        <input type="text" id="stateInput" value={accountData.state} onChange={handleInputChange} name="state" placeholder="state" />
+      </div>
+      <div>
+        <p>Zip:</p>
+        <input type="text" id="zipInput" value={accountData.zip} onChange={handleInputChange} name="zip" placeholder="zip code" />
+      </div>
+    </div>),
+  };
   const [wizardPages, setWizardPages] = useState([
     // index 0, page 1
     <>
@@ -35,54 +88,17 @@ const App: React.FC = (): JSX.Element => {
       <p onClick={() => setIndex(curr => curr - 1)}>Create an Account</p>
     </>,
     // index 2, page 2, default -> About Me
-    <div>
-      <h2>Account Info 1</h2>
-      <div className="wizardAboutMe">
-        <p>About Me:</p>
-        <textarea id="aboutMeInput" placeholder="tell me about yourself" />
-      </div>
-    </div>,
+    <></>,
     // index 3, page 3, default -> Birthday
-    <div>
-      <h2>Account Info 2</h2>
-      <div className="wizardBirthday">
-        <p>Birthday:</p>
-        <input type="date" id="birthdayInput" name="birthday" min="1900-01-01" max="2024-12-31"/>
-      </div>
-    </div>,
+    <></>,
   ]);
 
-  const possibleQuestions = {
-    // About Me
-    "wizardAboutMe": (<div className="wizardAboutMe">
-      <p>About Me:</p>
-      <textarea id="aboutMeInput" placeholder="tell me about yourself" />
-    </div>),
-    // Birthday
-    "wizardBirthday": (<div className="wizardBirthday">
-      <p>Birthday:</p>
-      <input type="date" id="birthdayInput" name="birthday" min="1900-01-01" max="2024-12-31"/>
-    </div>),
-    // Address
-    "wizardAddress": (<div className="wizardAddress">
-      <div>
-        <p>Street Address:</p>
-        <input type="text" id="streetAddressInput" placeholder="street address" />
-      </div>
-      <div>
-        <p>City:</p>
-        <input type="text" id="cityInput" placeholder="city" />
-      </div>
-      <div>
-        <p>State:</p>
-        <input type="text" id="stateInput" placeholder="state" />
-      </div>
-      <div>
-        <p>Zip:</p>
-        <input type="text" id="zipInput" placeholder="zip code" />
-      </div>
-    </div>),
-  };
+  useEffect(() => {
+    console.log("App.tsx -----------------------------")
+    console.log(accountData.wizardpage2);
+    console.log(accountData.wizardpage3);
+    console.log(accountData);
+  }, [accountData])
   
   return (
     <Router>
@@ -96,18 +112,15 @@ const App: React.FC = (): JSX.Element => {
             wizardPages={wizardPages}
             setWizardPages={setWizardPages}
             possibleQuestions={possibleQuestions}
+            hasInitializedData={hasInitializedData}
+            setHasInitializedData={setHasInitializedData}
           />}
         />
         <Route path='/admin' element={
-          <AdminContainer 
-            index={index} 
-            setIndex={setIndex}
+          <AdminContainer
             accountData={accountData}
             setAccountData={setAccountData}
-            wizardPages={wizardPages}
-            possibleQuestions={possibleQuestions}
-          />}
-        />
+          />}/>
         <Route path='/data' element={<Data />}/>
       </Routes>
     </Router>

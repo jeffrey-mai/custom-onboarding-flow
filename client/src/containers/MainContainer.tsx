@@ -2,7 +2,7 @@ import Wizard from "../components/Wizard";
 import { MainContainerProp } from "../../../types";
 
 const MainContainer: React.FC<MainContainerProp> = (props) => {
-  const { index, setIndex, accountData, setAccountData, wizardPages, setWizardPages, possibleQuestions } = props;
+  const { index, setIndex, accountData, setAccountData, wizardPages, setWizardPages, possibleQuestions, hasInitializedData, setHasInitializedData } = props;
 
   return (
     <div className="mainContainer">
@@ -14,6 +14,8 @@ const MainContainer: React.FC<MainContainerProp> = (props) => {
         wizardPages={wizardPages}
         setWizardPages={setWizardPages}
         possibleQuestions={possibleQuestions}
+        hasInitializedData={hasInitializedData}
+        setHasInitializedData={setHasInitializedData}
       />
     </div>
   );

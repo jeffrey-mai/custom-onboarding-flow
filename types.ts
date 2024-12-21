@@ -1,20 +1,18 @@
 export interface MainContainerProp {
   index: number;
   setIndex: React.Dispatch<React.SetStateAction<number>>;
-  accountData: Record<string, any>;
-  setAccountData: React.Dispatch<React.SetStateAction<number>>;
+  accountData: FormsType;
+  setAccountData: React.Dispatch<React.SetStateAction<FormsType>>;
   wizardPages: React.ReactElement<HTMLDivElement>[];
   setWizardPages: React.Dispatch<React.SetStateAction<React.ReactElement<HTMLDivElement>[]>>;
   possibleQuestions: Record<string, React.ReactElement<HTMLDivElement>>;
+  hasInitializedData: boolean;
+  setHasInitializedData: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export interface AdminContainerProp {
-  index: number;
-  setIndex: React.Dispatch<React.SetStateAction<number>>;
-  accountData: Record<string, any>;
-  setAccountData: React.Dispatch<React.SetStateAction<number>>;
-  wizardPages: React.ReactElement<HTMLDivElement>[];
-  possibleQuestions: Record<string, React.ReactElement<HTMLDivElement>>;
+  accountData: FormsType;
+  setAccountData: React.Dispatch<React.SetStateAction<FormsType>>;
 }
 
 export interface AccountsType {
