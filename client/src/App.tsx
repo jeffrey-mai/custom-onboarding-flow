@@ -1,9 +1,10 @@
-import React, { JSX, useEffect, useState } from 'react';
+import React, { JSX, use, useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MainContainer from './containers/MainContainer';
 import AdminContainer from './containers/AdminContainer';
-import Data from './components/Data';
+import ItemsContainer from './containers/ItemsContainer';
 import { FormsType } from '../../types';
+import Data from './components/Data';
 
 const App: React.FC = (): JSX.Element => {
   const [index, setIndex] = useState(0);
@@ -18,8 +19,10 @@ const App: React.FC = (): JSX.Element => {
     state: '',
     zip: -1,
     birthday: '',
+    item_category: '',
   })
   const [hasInitializedData, setHasInitializedData] = useState(false);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     console.log(name, value);
@@ -29,6 +32,17 @@ const App: React.FC = (): JSX.Element => {
       [name]: value
     }));
   };
+
+  const handleItemCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { value } = e.target;
+    console.log(value);
+    setHasInitializedData(false);
+    setAccountData(prev => ({
+      ...prev,
+      "item_category": value
+    }));
+  };
+
   const possibleQuestions = {
     // About Me
     "wizardAboutMe": (<div className="wizardAboutMe">
@@ -58,6 +72,27 @@ const App: React.FC = (): JSX.Element => {
         <p>Zip:</p>
         <input type="text" id="zipInput" value={accountData.zip} onChange={handleInputChange} name="zip" placeholder="zip code" />
       </div>
+    </div>),
+    // Item category
+    "wizardItemCategory": (<div className="wizardItemCategory">
+      <label htmlFor="itemCategoryInput" style={{ marginRight: "10px" }}>
+        Choose an option:
+      </label>
+      <select
+        id="itemCategoryInput"
+        value={accountData.item_category || ""}
+        onChange={handleItemCategoryChange}
+        style={{ padding: "5px" }}
+      >
+        <option value="" disabled>
+          Select an option
+        </option>
+        {["Men's clothing", "Women's clothing", "Jewelery", "Electronics"].map((category, index) => (
+          <option key={index} value={category}>
+            {category}
+          </option>
+        ))}
+      </select>
     </div>),
   };
   const [wizardPages, setWizardPages] = useState([
@@ -121,7 +156,8 @@ const App: React.FC = (): JSX.Element => {
             accountData={accountData}
             setAccountData={setAccountData}
           />}/>
-        <Route path='/data' element={<Data />}/>
+        <Route path='/data' element={<Data />} />
+        <Route path='/items' element={<ItemsContainer accountData={accountData} />} />
       </Routes>
     </Router>
   );

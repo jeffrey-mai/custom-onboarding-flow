@@ -39,6 +39,7 @@ const db = {
           state VARCHAR(100),
           zip INT,
           birthday VARCHAR(100),
+          item_category VARCHAR(100),
           FOREIGN KEY (username) REFERENCES accounts(username)
         )
       `;

@@ -63,6 +63,7 @@ const Data: React.FC = () => {
               <th>state</th>
               <th>zip</th>
               <th>birthday</th>
+              <th>item_category</th>
             </tr>
           </thead>
           <tbody>
@@ -71,21 +72,26 @@ const Data: React.FC = () => {
                 <tr>
                   <td data-label="id">{ele.id}</td>
                   <td data-label="username">{ele.username}</td>
-                  {/* <td data-label="wizardpage2">{ele.wizardpage2}</td> */}
-                  <td data-label="wizardpage2">{ele.wizardpage2.map((item, index) => (
+                  <td data-label="wizardpage2">{ele.wizardpage2.map((item) => (
                       <span>
                         {item}
                         <br />
                       </span>
                     ))}
                   </td>
-                  <td data-label="wizardpage3">{ele.wizardpage3}</td>
+                  <td data-label="wizardpage3">{ele.wizardpage3.map((item) => (
+                      <span>
+                        {item}
+                        <br />
+                      </span>
+                    ))}</td>
                   <td data-label="aboutme">{ele.aboutme}</td>
                   <td data-label="address">{ele.address}</td>
                   <td data-label="city">{ele.city}</td>
                   <td data-label="state">{ele.state}</td>
                   <td data-label="zip">{ele.zip}</td>
                   <td data-label="birthday">{ele.birthday}</td>
+                  <td data-label="item_category">{ele.item_category}</td>
                 </tr>
               )
             })}

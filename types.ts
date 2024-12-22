@@ -15,6 +15,10 @@ export interface AdminContainerProp {
   setAccountData: React.Dispatch<React.SetStateAction<FormsType>>;
 }
 
+export interface ItemsContainerProp {
+  accountData: FormsType;
+}
+
 export interface AccountsType {
   id: number;
   username: string;
@@ -32,4 +36,5 @@ export interface FormsType {
   state: string;
   zip: number;
   birthday: string;
+  item_category: string;
 }

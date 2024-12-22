@@ -66,20 +66,46 @@ accountController.getFormsTable = (req: Request, res: Response, next: NextFuncti
 }
 
 accountController.updateFormsTable = (req: Request, res: Response, next: NextFunction) => {
-  const { columns, username } = req.body;
-  console.log(username, columns);
-  const queryColumns = columns.join(", ");
-  const queryString = `
-    UPDATE forms
-    SET ${queryColumns}
-    WHERE username = $1;
-  `;
-  db.query(queryString, [username])
-    .then((data) => {
-      console.log(data);
-      return next();
-    })
-    .catch((err) => {return next(err);});
+  const { columns, accountData, wizardpage2, wizardpage3 } = req.body;
+  console.log(accountData, columns, wizardpage2, wizardpage3);
+  if(columns){
+    const queryColumns = columns.join(", ");
+    const queryString = `
+      UPDATE forms
+      SET ${queryColumns}
+      WHERE username = $1;
+    `;
+    if(!(queryColumns.includes("item_category = $2"))){
+      db.query(queryString, [accountData.username])
+      .then((data) => {
+        console.log(data);
+        return next();
+      })
+      .catch((err) => {return next(err);});
+    }
+    else{
+      console.log("item_category FOUNDDDDDDDDDDDDDD", accountData.item_category)
+      db.query(queryString, [accountData.username, accountData.item_category])
+      .then((data) => {
+        console.log(data);
+        return next();
+      })
+      .catch((err) => {return next(err);});
+    }
+  }
+  else{
+    const queryString = `
+      UPDATE forms
+      SET wizardpage2 = $2, wizardpage3 = $3
+      WHERE username = $1;
+    `;
+    db.query(queryString, [accountData.username, wizardpage2, wizardpage3])
+      .then((data) => {
+        console.log(data);
+        return next();
+      })
+      .catch((err) => {return next(err);});
+  }
 }
 
 accountController.updateQuestions = (req: Request, res: Response, next: NextFunction) => {

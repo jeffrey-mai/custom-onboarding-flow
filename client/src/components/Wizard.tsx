@@ -79,6 +79,7 @@ const Wizard: React.FC<MainContainerProp> = (props) => {
       const stateInput = document.getElementById("stateInput") as HTMLInputElement;
       const zipInput = document.getElementById("zipInput") as HTMLInputElement;
       const birthdayInput = document.getElementById("birthdayInput") as HTMLInputElement;
+      const itemCategoryInput = document.getElementById("itemCategoryInput") as HTMLSelectElement;
       const currStep = document.getElementById("step3");
       const prevStep = document.getElementById("step2");
       const updateColumns = [];
@@ -89,6 +90,7 @@ const Wizard: React.FC<MainContainerProp> = (props) => {
       if(stateInput) updateColumns.push(`state = '${stateInput.value ? stateInput.value : null}'`);
       if(zipInput) updateColumns.push(`zip = ${zipInput.value ? zipInput.value : null}`);
       if(birthdayInput) updateColumns.push(`birthday = '${birthdayInput.value ? birthdayInput.value : null}'`);
+      if(itemCategoryInput) updateColumns.push(`item_category = $2`);
 
       if(updateColumns.length != 0 && !updateColumns.join(", ").includes("null")){
         await fetch('http://localhost:3000/', {
@@ -96,7 +98,7 @@ const Wizard: React.FC<MainContainerProp> = (props) => {
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({
             columns: updateColumns,
-            username: accountData.username
+            accountData: accountData
           })
         })
         .then(response => {
@@ -108,7 +110,7 @@ const Wizard: React.FC<MainContainerProp> = (props) => {
         })
         .catch(error => { console.error('There was a problem with the POST request:', error);});
       }
-      else alert("Missing required data!");
+      else return alert("Missing required data!");
 
       if(index == 3) navigate('/admin');
     }

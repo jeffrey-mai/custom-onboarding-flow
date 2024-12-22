@@ -10,11 +10,13 @@ const Admin: React.FC<AdminContainerProp> = (props) => {
     wizardAboutMe: {checked: false},
     wizardBirthday: {checked: false},
     wizardAddress: {checked: false},
+    wizardItemCategory: {checked: false}
   });
   const [page3Options, setPage3Options] = useState<{ [key: string]: {checked: boolean} }>({
     wizardAboutMe: {checked: false},
     wizardBirthday: {checked: false},
     wizardAddress: {checked: false},
+    wizardItemCategory: {checked: false}
   });
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,15 +39,18 @@ const Admin: React.FC<AdminContainerProp> = (props) => {
   const handleDoneClick = async () => {
     const updatePages: string[][] = [[], []];
     console.log(accountData)
+    if(accountData.wizardpage2.length == 0 || accountData.wizardpage3.length == 0){
+      return alert("Must have at least 1 question on both pages!");
+    }
     if(!accountData.username) return alert("Must be logged in to modify questions!");
-    for(const ele of accountData.wizardpage3){
-      if(accountData.wizardpage2.includes(ele)){
+    for(const ele of accountData.wizardpage2){
+      if(accountData.wizardpage3.includes(ele)){
         return alert("Duplicate question!");
       }
       updatePages[0].push(ele);
     }
-    for(const ele of accountData.wizardpage2){
-      if(accountData.wizardpage3.includes(ele)){
+    for(const ele of accountData.wizardpage3){
+      if(accountData.wizardpage2.includes(ele)){
         return alert("Duplicate question!");
       }
       updatePages[1].push(ele);
@@ -59,7 +64,7 @@ const Admin: React.FC<AdminContainerProp> = (props) => {
         wizardpage3: updatePages[1]
       })
     })
-    .then(response => {navigate('/')})
+    .then(response => {navigate('/items')})
     .catch(error => { console.error('There was a problem with the POST request:', error);});
   }
 
@@ -142,6 +147,9 @@ const Admin: React.FC<AdminContainerProp> = (props) => {
               <label>
                 <input type="checkbox" name="wizardAddress" data-page={2} checked={page2Options.wizardAddress.checked} onChange={handleCheckboxChange} /> Address
               </label>
+              <label>
+                <input type="checkbox" name="wizardItemCategory" data-page={2} checked={page2Options.wizardItemCategory.checked} onChange={handleCheckboxChange} /> Item Category
+              </label>
             </div>
           </div>
           <div className="checkListBox">
@@ -155,6 +163,9 @@ const Admin: React.FC<AdminContainerProp> = (props) => {
               </label>
               <label>
                 <input type="checkbox" name="wizardAddress" data-page={3} checked={page3Options.wizardAddress.checked} onChange={handleCheckboxChange} /> Address
+              </label>
+              <label>
+                <input type="checkbox" name="wizardItemCategory" data-page={3} checked={page3Options.wizardItemCategory.checked} onChange={handleCheckboxChange} /> Item Category
               </label>
             </div>
           </div>
