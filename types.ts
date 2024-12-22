@@ -19,6 +19,20 @@ export interface ItemsContainerProp {
   accountData: FormsType;
 }
 
+export interface ItemType {
+  itemData: ItemDataType;
+}
+
+export interface ItemDataType {
+  "id": number;
+  "title": string;
+  "price": number;
+  "description": string;
+  "category": string;
+  "image": string;
+  "rating": Record<string, number>;
+}
+
 export interface AccountsType {
   id: number;
   username: string;

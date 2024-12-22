@@ -31,7 +31,7 @@ const db = {
         CREATE TABLE IF NOT EXISTS forms (
           id SERIAL PRIMARY KEY,
           username VARCHAR(255),
-          wizardpage2 TEXT[] DEFAULT '{"wizardAboutMe"}',
+          wizardpage2 TEXT[] DEFAULT '{"wizardAboutMe", "wizardItemCategory"}',
           wizardpage3 TEXT[] DEFAULT '{"wizardBirthday"}',
           aboutMe TEXT,
           address VARCHAR(255),

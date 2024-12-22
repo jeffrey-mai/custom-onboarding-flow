@@ -75,7 +75,7 @@ accountController.updateFormsTable = (req: Request, res: Response, next: NextFun
       SET ${queryColumns}
       WHERE username = $1;
     `;
-    if(!(queryColumns.includes("item_category = $2"))){
+    if(!(queryColumns.includes("aboutme = $2"))){
       db.query(queryString, [accountData.username])
       .then((data) => {
         console.log(data);
@@ -84,8 +84,7 @@ accountController.updateFormsTable = (req: Request, res: Response, next: NextFun
       .catch((err) => {return next(err);});
     }
     else{
-      console.log("item_category FOUNDDDDDDDDDDDDDD", accountData.item_category)
-      db.query(queryString, [accountData.username, accountData.item_category])
+      db.query(queryString, [accountData.username, accountData.aboutme])
       .then((data) => {
         console.log(data);
         return next();

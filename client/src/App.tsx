@@ -1,4 +1,4 @@
-import React, { JSX, use, useEffect, useState } from 'react';
+import React, { JSX, useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MainContainer from './containers/MainContainer';
 import AdminContainer from './containers/AdminContainer';
@@ -11,7 +11,7 @@ const App: React.FC = (): JSX.Element => {
   const [accountData, setAccountData] = useState<FormsType>({
     id: -1,
     username: '',
-    wizardpage2: ['wizardAboutMe'],
+    wizardpage2: ['wizardAboutMe', 'wizardItemCategory'],
     wizardpage3: ['wizardBirthday'],
     aboutme: '',
     address: '',
@@ -45,17 +45,20 @@ const App: React.FC = (): JSX.Element => {
 
   const possibleQuestions = {
     // About Me
-    "wizardAboutMe": (<div className="wizardAboutMe">
+    "wizardAboutMe": (
+    <div className="wizardAboutMe">
       <p>About Me:</p>
       <textarea id="aboutMeInput" value={accountData.aboutme} onChange={handleInputChange} name="aboutme" placeholder="tell me about yourself" />
     </div>),
     // Birthday
-    "wizardBirthday": (<div className="wizardBirthday">
+    "wizardBirthday": (
+    <div className="wizardBirthday">
       <p>Birthday:</p>
       <input type="date" id="birthdayInput" value={accountData.birthday} onChange={handleInputChange} name="birthday" min="1900-01-01" max="2024-12-31"/>
     </div>),
     // Address
-    "wizardAddress": (<div className="wizardAddress">
+    "wizardAddress": (
+    <div className="wizardAddress">
       <div>
         <p>Street Address:</p>
         <input type="text" id="streetAddressInput" value={accountData.address} onChange={handleInputChange} name="address" placeholder="street address" />
@@ -74,13 +77,14 @@ const App: React.FC = (): JSX.Element => {
       </div>
     </div>),
     // Item category
-    "wizardItemCategory": (<div className="wizardItemCategory">
+    "wizardItemCategory": (
+    <div className="wizardItemCategory">
       <label htmlFor="itemCategoryInput" style={{ marginRight: "10px" }}>
         Choose an option:
       </label>
       <select
         id="itemCategoryInput"
-        value={accountData.item_category || ""}
+        value={accountData.item_category != null ? accountData.item_category : ""}
         onChange={handleItemCategoryChange}
         style={{ padding: "5px" }}
       >
@@ -88,7 +92,7 @@ const App: React.FC = (): JSX.Element => {
           Select an option
         </option>
         {["Men's clothing", "Women's clothing", "Jewelery", "Electronics"].map((category, index) => (
-          <option key={index} value={category}>
+          <option key={index} value={["Men''s clothing", "Women''s clothing", "Jewelery", "Electronics"][index]}>
             {category}
           </option>
         ))}
@@ -122,7 +126,7 @@ const App: React.FC = (): JSX.Element => {
       </div>
       <p onClick={() => setIndex(curr => curr - 1)}>Create an Account</p>
     </>,
-    // index 2, page 2, default -> About Me
+    // index 2, page 2, default -> About Me, Item Category
     <></>,
     // index 3, page 3, default -> Birthday
     <></>,

@@ -84,13 +84,16 @@ const Wizard: React.FC<MainContainerProp> = (props) => {
       const prevStep = document.getElementById("step2");
       const updateColumns = [];
 
-      if(aboutMeInput) updateColumns.push(`aboutme = '${aboutMeInput.value ? aboutMeInput.value : null}'`);
+      if(aboutMeInput) updateColumns.push(`aboutme = $2`);
       if(streetAddressInput) updateColumns.push(`address = '${streetAddressInput.value ? streetAddressInput.value : null}'`);
       if(cityInput) updateColumns.push(`city = '${cityInput.value ? cityInput.value : null}'`);
       if(stateInput) updateColumns.push(`state = '${stateInput.value ? stateInput.value : null}'`);
-      if(zipInput) updateColumns.push(`zip = ${zipInput.value ? zipInput.value : null}`);
+      if(zipInput) {
+        if(isNaN(Number(zipInput.value))) return alert("Zip is not a number!");
+        updateColumns.push(`zip = ${zipInput.value ? zipInput.value : null}`);
+      }
       if(birthdayInput) updateColumns.push(`birthday = '${birthdayInput.value ? birthdayInput.value : null}'`);
-      if(itemCategoryInput) updateColumns.push(`item_category = $2`);
+      if(itemCategoryInput) updateColumns.push(`item_category = '${itemCategoryInput.value ? itemCategoryInput.value : null}'`);
 
       if(updateColumns.length != 0 && !updateColumns.join(", ").includes("null")){
         await fetch('http://localhost:3000/', {
@@ -112,7 +115,7 @@ const Wizard: React.FC<MainContainerProp> = (props) => {
       }
       else return alert("Missing required data!");
 
-      if(index == 3) navigate('/admin');
+      if(index == 3) navigate('/items');
     }
   }
 
