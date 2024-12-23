@@ -1,26 +1,21 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "./server/server.ts",
-      "use": "@vercel/node"
+  "projects": {
+    "client": {
+      "src": "client",
+      "buildCommand": "npm run build",
+      "outputDirectory": "build"
     },
-    {
-      "src": "./client/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "build"
+    "server": {
+      "src": "server",
+      "functions": {
+        "server.ts": {
+          "runtime": "nodejs16.x"
+        }
       }
     }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "server/server.ts"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "client/$1"
-    }
+  },
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/server/server.ts" },
+    { "source": "/(.*)", "destination": "/client/$1" }
   ]
 }

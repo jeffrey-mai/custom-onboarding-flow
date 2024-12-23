@@ -5,9 +5,7 @@ const Dotenv = require('dotenv-webpack');
 
 module.exports = {
   mode: process.env.NODE_ENV,
-  entry: {
-    src: './client/index.tsx',
-  },
+  entry: './client/index.tsx',
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'build'),
@@ -51,7 +49,6 @@ module.exports = {
     // open: true, // Automatically opens the browser
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.ts', '.tsx'],
-    modules: ['src', 'node_modules'],
+    extensions: ['.js', '.jsx', '.ts', '.tsx']
   },
 };
