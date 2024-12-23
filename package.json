@@ -13,8 +13,8 @@
   "license": "ISC",
   "dependencies": {
     "@types/pg": "^8.11.10",
-    "@vercel/node": "^5.0.0",
-    "@vercel/static-build": "^2.5.39",
+    "@vercel/node": "^4.0.0",
+    "@vercel/static-build": "^1.2.1",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.7",
