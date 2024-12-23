@@ -13,7 +13,7 @@ const ItemsContainer: React.FC<ItemsContainerProp> = (props) => {
   }
   
   useEffect(() => {
-    const itemCategory = accountData.item_category.toLowerCase().replace("''", "'");
+    const itemCategory = accountData.item_category.toLowerCase();
     fetch(`https://fakestoreapi.com/products/category/${itemCategory}`, {
       method: 'GET',
       headers: {'Content-Type': 'application/json'},

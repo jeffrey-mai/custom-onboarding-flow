@@ -93,7 +93,7 @@ const Wizard: React.FC<MainContainerProp> = (props) => {
         updateColumns.push(`zip = ${zipInput.value ? zipInput.value : null}`);
       }
       if(birthdayInput) updateColumns.push(`birthday = '${birthdayInput.value ? birthdayInput.value : null}'`);
-      if(itemCategoryInput) updateColumns.push(`item_category = '${itemCategoryInput.value ? itemCategoryInput.value : null}'`);
+      if(itemCategoryInput) updateColumns.push(`item_category = '${itemCategoryInput.value ? itemCategoryInput.value.replace("'", "''") : null}'`);
 
       if(updateColumns.length != 0 && !updateColumns.join(", ").includes("null")){
         await fetch('http://localhost:3000/', {

@@ -92,7 +92,7 @@ const App: React.FC = (): JSX.Element => {
           Select an option
         </option>
         {["Men's clothing", "Women's clothing", "Jewelery", "Electronics"].map((category, index) => (
-          <option key={index} value={["Men''s clothing", "Women''s clothing", "Jewelery", "Electronics"][index]}>
+          <option key={index} value={category}>
             {category}
           </option>
         ))}
@@ -137,6 +137,7 @@ const App: React.FC = (): JSX.Element => {
     console.log(accountData.wizardpage2);
     console.log(accountData.wizardpage3);
     console.log(accountData);
+    console.log(accountData.item_category)
   }, [accountData])
   
   return (
