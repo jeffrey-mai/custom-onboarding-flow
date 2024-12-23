@@ -51,6 +51,7 @@ module.exports = {
     // open: true, // Automatically opens the browser
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js']
+    extensions: ['.js', '.jsx', '.ts', '.tsx'],
+    modules: ['src', 'node_modules'],
   },
 };
