@@ -1,5 +1,5 @@
 import { ReactElement, useEffect, useState } from "react";
-import { ItemDataType, ItemsContainerProp, ItemType } from "../../../types";
+import { ItemDataType, ItemsContainerProp, ItemType } from "../../types";
 import Item from "../components/Item";
 import { useNavigate } from "react-router-dom";
 

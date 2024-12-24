@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { AdminContainerProp, FormsType } from "../../../types";
+import { AdminContainerProp, FormsType } from "../../types";
 import { useNavigate } from "react-router-dom";
 
 const Admin: React.FC<AdminContainerProp> = (props) => {
@@ -55,9 +55,10 @@ const Admin: React.FC<AdminContainerProp> = (props) => {
       }
       updatePages[1].push(ele);
     }
-    await fetch('http://localhost:3000/admin', {
+    await fetch('https://server-jeffrey-mais-projects.vercel.app/admin', {
       method: 'PUT',
       headers: {'Content-Type': 'application/json'},
+      credentials: 'include',
       body: JSON.stringify({
         username: accountData.username,
         wizardpage2: updatePages[0],

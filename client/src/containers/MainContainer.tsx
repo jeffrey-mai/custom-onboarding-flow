@@ -1,5 +1,5 @@
 import Wizard from "../components/Wizard";
-import { MainContainerProp } from "../../../types";
+import { MainContainerProp } from "../../types";
 
 const MainContainer: React.FC<MainContainerProp> = (props) => {
   const { index, setIndex, accountData, setAccountData, wizardPages, setWizardPages, possibleQuestions, hasInitializedData, setHasInitializedData } = props;

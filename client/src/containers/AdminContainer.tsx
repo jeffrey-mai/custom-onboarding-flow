@@ -1,4 +1,4 @@
-import { AdminContainerProp } from "../../../types";
+import { AdminContainerProp } from "../../types";
 import Admin from "../components/Admin";
 
 const AdminContainer: React.FC<AdminContainerProp> = (props) => {

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { MainContainerProp } from "../../../types";
+import { MainContainerProp } from "../../types";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -29,9 +29,10 @@ const Wizard: React.FC<MainContainerProp> = (props) => {
       const prevStep = document.getElementById("step1");
 
       if(index == 0 && createUsernameInput.value && createPasswordInput.value){
-        await fetch('http://localhost:3000/', {
+        await fetch('https://server-jeffrey-mais-projects.vercel.app/', {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
+          credentials: 'include',
           body: JSON.stringify({
             username: createUsernameInput.value,
             password: createPasswordInput.value
@@ -52,9 +53,10 @@ const Wizard: React.FC<MainContainerProp> = (props) => {
         .catch(error => { console.error('There was a problem with the POST request:', error);});
       }
       else if(index == 1 && usernameInput.value && passwordInput.value){
-        await fetch(`http://localhost:3000/account?username=${usernameInput.value}&password=${passwordInput.value}`, {
+        await fetch(`https://server-jeffrey-mais-projects.vercel.app/account?username=${usernameInput.value}&password=${passwordInput.value}`, {
           method: 'GET',
           headers: {'Content-Type': 'application/json'},
+          credentials: 'include',
         })
         .then(response => response.json())
         .then(data => {
@@ -96,9 +98,10 @@ const Wizard: React.FC<MainContainerProp> = (props) => {
       if(itemCategoryInput) updateColumns.push(`item_category = '${itemCategoryInput.value ? itemCategoryInput.value.replace("'", "''") : null}'`);
 
       if(updateColumns.length != 0 && !updateColumns.join(", ").includes("null")){
-        await fetch('http://localhost:3000/', {
+        await fetch('https://server-jeffrey-mais-projects.vercel.app/', {
           method: 'PUT',
           headers: {'Content-Type': 'application/json'},
+          credentials: 'include',
           body: JSON.stringify({
             columns: updateColumns,
             accountData: accountData

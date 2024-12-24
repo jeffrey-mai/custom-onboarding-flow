@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MainContainer from './containers/MainContainer';
 import AdminContainer from './containers/AdminContainer';
 import ItemsContainer from './containers/ItemsContainer';
-import { FormsType } from '../../types';
+import { FormsType } from '../types';
 import Data from './components/Data';
 
 const App: React.FC = (): JSX.Element => {

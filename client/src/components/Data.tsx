@@ -1,22 +1,24 @@
 import { useEffect, useState } from "react";
-import { AccountsType, FormsType } from "../../../types";
+import { AccountsType, FormsType } from "../../types";
 
 const Data: React.FC = () => {
   const [accountsTable, setAccountsTable] = useState<AccountsType[]>([]);
   const [formsTable, setFormsTable] = useState<FormsType[]>([]);
 
   useEffect(() => {
-    fetch('http://localhost:3000/data/accounts', {
+    fetch('https://server-jeffrey-mais-projects.vercel.app/data/accounts', {
       method: 'GET',
-      headers: {'Content-Type': 'application/json'}
+      headers: {'Content-Type': 'application/json'},
+      credentials: 'include',
     })
     .then(response => response.json())
     .then(data => setAccountsTable(data))
     .catch(error => { console.error('There was a problem with the POST request:', error);});
   
-    fetch('http://localhost:3000/data/forms', {
+    fetch('https://server-jeffrey-mais-projects.vercel.app/data/forms', {
       method: 'GET',
-      headers: {'Content-Type': 'application/json'}
+      headers: {'Content-Type': 'application/json'},
+      credentials: 'include',
     })
     .then(response => response.json())
     .then(data => setFormsTable(data))
